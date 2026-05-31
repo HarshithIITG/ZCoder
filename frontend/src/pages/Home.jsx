@@ -8,7 +8,6 @@ function Home() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const jwtoken = localStorage.getItem("jwtoken");
@@ -43,10 +42,6 @@ function Home() {
     navigate(route);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("jwtoken");
-    navigate("/login");
-  };
 
   return (
     <div className="home-page">

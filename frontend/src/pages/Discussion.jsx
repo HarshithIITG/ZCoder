@@ -19,7 +19,7 @@ const Discussions = () => {
     if (jwtoken === null || jwtoken === undefined) {
       navigate("/login");
     }
-  });
+  }, [navigate]);
 
   useEffect(() => {
     const fetchSolutions = async () => {
@@ -33,6 +33,7 @@ const Discussions = () => {
       }
     };
     fetchSolutions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [titleSlug]);
 
   const handleVote = async (solutionId, voteType) => {

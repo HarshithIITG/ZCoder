@@ -26,7 +26,7 @@ function RoomPage() {
     if (jwtoken === null || jwtoken === undefined) {
       navigate("/login");
     }
-  });
+  }, [navigate]);
   const backend = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
@@ -81,7 +81,8 @@ function RoomPage() {
     return () => {
       socket.current.disconnect();
     };
-  }, [username, roomId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username, roomId, backend]);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {

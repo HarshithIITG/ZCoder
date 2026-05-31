@@ -17,7 +17,6 @@ const ProblemDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [language, setLanguage] = useState("cpp"); // Add language state
   const backend = process.env.REACT_APP_BACKEND_URL;
-  const LEETCODE_API = `https://leetcode-api-mu.vercel.app/select?titleSlug=${titleSlug}`;
 
   useEffect(() => {
     // Redirect to the login page if the user is not authenticated
@@ -25,9 +24,10 @@ const ProblemDetail = () => {
     if (jwtoken === null || jwtoken === undefined) {
       navigate("/login");
     }
-  });
+  }, [navigate]);
 
   useEffect(() => {
+    const LEETCODE_API = `https://leetcode-api-mu.vercel.app/select?titleSlug=${titleSlug}`;
     async function fetchProblem() {
       try {
         const res = await axios.get(LEETCODE_API);
@@ -40,10 +40,6 @@ const ProblemDetail = () => {
     }
     fetchProblem();
   }, [titleSlug]);
-
-  const handleCodeChange = (newCode) => {
-    setCode(newCode);
-  };
 
   const handleSubmit = async () => {
     if (!code) return;
@@ -167,9 +163,8 @@ const ProblemDetail = () => {
           </div>
           {submissionResult && (
             <div
-              className={`submission-result ${
-                submissionResult.passed ? "success" : "error"
-              }`}
+              className={`submission-result ${submissionResult.passed ? "success" : "error"
+                }`}
             >
               <h3>Submission Result</h3>
               <p>{submissionResult.message}</p>

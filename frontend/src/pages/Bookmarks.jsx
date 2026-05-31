@@ -83,7 +83,6 @@ function Bookmarks() {
   const navigate = useNavigate();
   const [problems, setProblems] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]); // for tags
-  const [bookmarks, setBookmarks] = useState([]);
   const [filterMode, setFilterMode] = useState("OR"); // as toggles btw STATE
 
   useEffect(() => {
@@ -92,7 +91,7 @@ function Bookmarks() {
     if (jwtoken === null || jwtoken === undefined) {
       navigate("/login");
     }
-  });
+  }, [navigate]);
   const backend = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
@@ -121,15 +120,9 @@ function Bookmarks() {
       }
     }
     fetchBookmarks();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    // Redirect to the login page if the user is not authenticated
-    const jwtoken = localStorage.getItem("jwtoken");
-    if (jwtoken === null || jwtoken === undefined) {
-      navigate("/login");
-    }
-  });
 
   const handleCardClick = (titleSlug) => {
     navigate(`/problem/${titleSlug}`); //take inp as params in this route

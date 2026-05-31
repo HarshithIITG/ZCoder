@@ -20,6 +20,7 @@ export default function CodeEditor({
     if (isDefaultSnippet || !value) {
       onChange(CODE_SNIPPETS[language]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [language]);
 
   const runCode = async () => {
