@@ -9,31 +9,23 @@ const auth = require("../middleware/auth");
 
 router.post("/register/", async (request, response) => {
   const { username, password, email } = request.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const dbUsername = await User.find({ Username: username });
-  const dbEmail = await User.find({ Email: email });
-  if (dbUsername.length === 0 && dbEmail.length === 0) {
-    if (password.length < 6) {
-      response.status(400);
-      response.send("Password is too short");
-    } else {
-      const newUser = new User({
-        Username: username,
-        HashedPassword: hashedPassword,
-        Email: email,
-      });
-      const dbResponse = await User.create(newUser);
-      response.status(200);
-      response.send(`User created successfully`);
-    }
-  } else {
-    response.status(400);
-    if (dbUsername.length !== 0) {
-      response.send("Username already exists");
-    } else if (dbEmail.length !== 0) {
-      response.send("Email already exists");
-    }
+
+  if (!username || !password || !email) {
+    return response.status(400).json({ error: "All fields are required" });
   }
+  if (password.length < 6) {
+    return response.status(400).json({ error: "Password must be at least 6 characters" });
+  }
+
+  const existing = await User.findOne({ $or: [{ Username: username }, { Email: email }] });
+  if (existing) {
+    const field = existing.Username === username ? "Username" : "Email";
+    return response.status(409).json({ error: `${field} already exists` });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await User.create({ Username: username, HashedPassword: hashedPassword, Email: email });
+  response.status(201).json({ message: "User created successfully" });
 });
 
 router.post("/login/", async (req, res) => {
@@ -50,7 +42,7 @@ router.post("/login/", async (req, res) => {
       username: username,
       user_id: dbuser._id.toString(), // Corrected to use dbuser._id
     };
-    const jwtoken = jwt.sign(payload, "MY_SECRET_TOKEN");
+    const jwtoken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
     return res.json({ token: jwtoken }); // Return as JSON
   } else {
     return res.status(400).json({ error: "Invalid password" }); // Return JSON response

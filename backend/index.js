@@ -23,13 +23,14 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
   },
 });
 
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
   })
 );
 app.use((req, res, next) => {
@@ -69,7 +70,6 @@ app.get("/users/:username", async (req, res) => {
   }
 });
 app.get("/ping", (req, res) => {
-  console.log(process.env.GROQ_API_KEY);
   res.json({ msg: "API is working !!" });
 });
 

@@ -1,26 +1,21 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
 
-const auth = async (req, res, next) => {
-    try {
-        // Get token from header
-        const token = req.header('Authorization')?.replace('Bearer ', '');
-        
-        if (!token) {
-            return res.status(401).json({ error: 'Authorization token required' });
-        }
+const auth = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
 
-        // Verify token
-        const decoded = jwt.verify(token,"MY_SECRET_TOKEN");
-        
-        // Attach user to request
+    if (!token) {
+        return res.status(401).json({ error: 'Authorization token required' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
-        // console.log(1, decoded);
-        
         next();
     } catch (err) {
+        const message = err.name === 'TokenExpiredError' ? 'Token expired, please login again' : 'Invalid token';
         console.error('Auth error:', err.message);
-        res.status(401).json({ error: 'Please authenticate' });
+        res.status(401).json({ error: message });
     }
 };
 
