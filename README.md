@@ -4,7 +4,7 @@
 A interactive coding community platform to practise and scale up your skills.
 
 ## Live Demo
-[Website](https://your-app.vercel.app/)
+[Website](https://z-coder-koyv9y2dc-sreevaishnavaharshith-5802s-projects.vercel.app)
 
 ## How to Run locally
 ### first clone the repo
